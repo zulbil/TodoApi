@@ -59,7 +59,7 @@ app.get('/todos/:id', (req, res) => {
     })
 });
 
-app.delete('/todos/:id', (req, res) => {
+app.delete('/todos/remove/:id', (req, res) => {
     var id = req.params.id; 
 
     if(!ObjectID.isValid(id)) {
@@ -77,15 +77,16 @@ app.delete('/todos/:id', (req, res) => {
     })
 });
 
-app.patch('todos/:id', (req, res) => {
+app.patch('/todos/edit/:id', (req, res) => {
     var id = req.params.id; 
+    //in our body we will take only text and completed property
     var body = _.pick(req.body, ['text', 'completed']); 
 
     if(!ObjectID.isValid(id)) {
         return res.status(404).send({'response': 'ID is invalid'}); 
     }
 
-    if(_.isBoolean(body.completed) && body.completed = true ) {
+    if(_.isBoolean(body.completed) && body.completed == true ) {
         body.completedAt = new Date().getTime(); 
     } else {
         body.completed = false; 
