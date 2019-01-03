@@ -11,17 +11,6 @@ const app           = express();
 const port          = process.env.PORT || 3000; 
 app.use(bodyParser.json()); 
 
-app.post('/new/user', (req, res) => {
-    let newUser = new User({
-        email: req.body.email
-    }); 
-    newUser.save().then((doc) => {
-        res.send(doc);
-    }, (error) => {
-        res.status(400).send(error);
-    })
-});
-
 app.post('/new/todo', (req, res) => {
     let newTodo = new Todo({
         text: req.body.text
@@ -102,6 +91,23 @@ app.patch('/todos/edit/:id', (req, res) => {
         res.status(400).send(err);
     })
 })
+
+//User rest api routes
+app.post('/new/user', (req, res) => {
+    var body    = _.pick(req.body, ['email', 'password']); 
+    var newUser = new User(body); 
+
+    newUser.save().then(() => {
+        console.log('New User: ',newUser);
+        return newUser.generateAuthToken(); 
+    }).then((token) => {
+        console.log(token); 
+        res.header('x-auth', token).send(newUser);
+    }).catch((error) => {
+        console.log('Error: ',error);
+        res.status(400).send(error);
+    })
+});
 
 app.listen(port, () => {
     console.log('Example app listening on port '+port+'!'); 
