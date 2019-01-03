@@ -98,13 +98,10 @@ app.post('/new/user', (req, res) => {
     var newUser = new User(body); 
 
     newUser.save().then(() => {
-        console.log('New User: ',newUser);
         return newUser.generateAuthToken(); 
     }).then((token) => {
-        console.log(token); 
         res.header('x-auth', token).send(newUser);
     }).catch((error) => {
-        console.log('Error: ',error);
         res.status(400).send(error);
     })
 });
