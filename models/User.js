@@ -2,6 +2,8 @@ const mongoose      = require('mongoose');
 const validator     = require('validator');  
 const jwt           = require('jsonwebtoken'); 
 const _             = require('lodash'); 
+const bcrypt        = require('bcryptjs'); 
+
 
 var UserSchema = new mongoose.Schema({
     email: {
@@ -56,6 +58,7 @@ UserSchema.methods.generateAuthToken = function () {
     })
 }
 
+//This function is make a query to find user with the given token
 UserSchema.statics.findByToken = function (token) {
     var User = this; 
     var decoded; 
@@ -74,6 +77,26 @@ UserSchema.statics.findByToken = function (token) {
         'tokens.access': 'auth'
     }); 
 }
+
+//Middleware : this function will run right before we save a new user into the database
+UserSchema.pre('save', function (next) {
+    var user = this; 
+    var userPassword = user.password; 
+    //Check if a pasword has been updated
+    // if yes, we'll hash the given password and store it to the database
+    // if no, we'll simply call next 
+    if(user.isModified('password')) {
+        bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.hash(userPassword, salt, function(err, hash) {
+                user.password = hash; 
+                next(); 
+            });
+        });
+    } else {
+        next(); 
+    }
+
+})
 
 var User = mongoose.model('User', UserSchema); 
 
