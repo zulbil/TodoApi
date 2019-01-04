@@ -2,13 +2,15 @@ const express       = require('express');
 const bodyParser    = require('body-parser'); 
 const _             = require('lodash');
 
-const {mongoose}    = require('./db/config-db'); 
-const {User}        = require('./models/User');
-const {Todo}        = require('./models/Todo'); 
-const {ObjectID}    = require('mongodb');
+var {mongoose}      = require('./db/config-db'); 
+var {User}          = require('./models/User');
+var {Todo}          = require('./models/Todo'); 
+var {ObjectID}      = require('mongodb');
+var {authenticate}  = require('./middlewares/authenticate'); 
 
 const app           = express(); 
 const port          = process.env.PORT || 3000; 
+
 app.use(bodyParser.json()); 
 
 app.post('/new/todo', (req, res) => {
@@ -106,8 +108,13 @@ app.post('/new/user', (req, res) => {
     })
 });
 
+//Private Routes
+app.get('/user/me', authenticate, (req, res) => {
+    res.status(200).send(req.user); 
+})
+
 app.listen(port, () => {
-    console.log('Example app listening on port '+port+'!'); 
+    console.log('Connected on port '+port+'!'); 
 });
 
 module.exports = {app}; 
