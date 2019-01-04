@@ -34,7 +34,7 @@ var UserSchema = new mongoose.Schema({
     }]
 }); 
 
-//Here, we are overiding the response when we save a user
+//Here, we are overriding the response when we save a user
 // For security reason, the client just need to have back a user id and email
 UserSchema.methods.toJSON = function () {
     var user        = this; 
@@ -54,6 +54,25 @@ UserSchema.methods.generateAuthToken = function () {
     return user.save().then(() =>{ 
         return token; 
     })
+}
+
+UserSchema.statics.findByToken = function (token) {
+    var User = this; 
+    var decoded; 
+    try {
+        decoded = jwt.verify(token, 'abc123'); 
+    } catch (error) {
+        // return new Promise((resolve, reject) => {
+        //     reject(); 
+        // }); 
+        return Promise.reject(); 
+    }
+
+    return User.findOne({
+        '_id': decoded._id, 
+        'tokens.token': token,
+        'tokens.access': 'auth'
+    }); 
 }
 
 var User = mongoose.model('User', UserSchema); 
