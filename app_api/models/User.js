@@ -78,6 +78,23 @@ UserSchema.statics.findByToken = function (token) {
     }); 
 }
 
+//This function is make a query to find user with the given email 
+UserSchema.statics.findByCredentials = function (email, password) {
+    var User = this; 
+
+    return User.findOne({email}).then((user)=> {
+        if(!user) {
+            return Promise.reject();
+        }
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(password, user.password, (err, res) => {
+                if(res) resolve(user);
+                else reject();
+            })
+        }) 
+    })
+}
+
 //Middleware : this function will run right before we save a new user into the database
 UserSchema.pre('save', function (next) {
     var user = this; 
