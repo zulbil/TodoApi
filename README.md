@@ -9,14 +9,11 @@
 
 ### Installation
 
-- git clone https://gitlab.satoripop.com/joel.zulbal/silva.git
+- git clone https://github.com/zulbil/TodoApi.git
 - npm install
 
 In Development
-- npm run watch 
-
-In Production
-- npm run production 
+- npm run start
 
 ### Development Team
 
