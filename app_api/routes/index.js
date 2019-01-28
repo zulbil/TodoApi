@@ -15,7 +15,8 @@ router.patch('/todos/edit/:id', todoCtrl.todoUpdate);
 
 //Users Routes
 router.post('/new/user', userCtrl.userCreate); 
-router.get('/user/me',authenticate, userCtrl.userProfile); //Private routes
+router.get('/user/me', authenticate, userCtrl.userProfile); //Private routes
 router.post('/user/login', userCtrl.userLogin); 
+router.delete('/user/logout', authenticate, userCtrl.userLogout);
 
 module.exports = {router}; 

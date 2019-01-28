@@ -30,8 +30,20 @@ var userLogin = function (req, res) {
         res.status(400).send(error);
     })
 }
+
+var userLogout = function (req, res) {
+    var User    = req.user; 
+    var token   = req.token; 
+
+    User.removeToken(token).then(() => {
+        res.status(204).send(); 
+    }).catch((error) => {
+        res.status(400).send(error); 
+    })
+}
 module.exports = {
     userCreate,
     userProfile,
-    userLogin
+    userLogin, 
+    userLogout
 }
