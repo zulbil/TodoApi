@@ -18,3 +18,8 @@ In Development
 ### Development Team
 
 - Joel Alexandre Khang Zulbal [alexkhang25@yahoo.fr]
+
+### What i learned: 
+
+When doing this project, i learned how to generate a token with jsonwebtoken in order to protect a specific route. 
+
