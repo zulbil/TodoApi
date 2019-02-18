@@ -1,0 +1,12 @@
+{
+	"development": {
+		"PORT": 3000,
+		"MONGODB_URI": "mongodb://localhost:27017/todosApi",
+		"JWT_SECRET": "cavert785bgcdxokn"
+	},
+	"test": {
+		"PORT": 3000,
+		"MONGODB_URI": "mongodb://localhost:27017/todosApiTest",
+		"JWT_SECRET": "cavnbct785bgcdxokn"
+	}
+}
