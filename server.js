@@ -1,11 +1,11 @@
 const express       = require('express');
 const bodyParser    = require('body-parser'); 
 
-var {mongoose}      = require('./db/config-db'); 
 var {router}        = require('./app_api/routes/index'); 
 
+require('./db/config-db'); 
 const app           = express(); 
-const port          = process.env.PORT || 3000; 
+const port          = process.env.PORT; 
 
 app.use(bodyParser.json()); 
 
