@@ -13,6 +13,10 @@ var TodoSchema  = new mongoose.Schema({
     completedAt: { 
         type: String,
         default: false  
+    },
+    _creator: {
+        type: mongoose.Schema.Types.ObjectId, 
+        require: true
     }
 }); 
 

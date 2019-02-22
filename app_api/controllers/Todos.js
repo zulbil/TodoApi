@@ -3,30 +3,37 @@ var {ObjectID}      = require('mongodb');
 
 var todoCreate = function(req, res) {
     var newTodo = new Todo({
-        text: req.body.text
+        text: req.body.text,
+        _creator: req.user._id
     }); 
     newTodo.save().then((doc) => {
-        res.send(doc);
+        res.status(201).send(doc);
     }, (error) => {
         res.status(400).send(error);
     })
 }
 
 var todoList = function(req, res ) {
-    Todo.find().then((todos) => {
-        res.send({todos});
+    Todo.find({
+        _creator: req.user._id
+    }).then((todos) => {
+        if(!todos) return res.status(404).send({'response': 'Not found'}); 
+        res.status(200).send({todos});
     }, (err) => {
-        res.status(404).send(err);
+        res.status(400).send(err);
     }); 
 }
 var todoById = function(req, res ) {
     var id = req.params.id; 
 
     if(!ObjectID.isValid(id)) {
-        return res.status(404).send({'response': 'ID is invalid'}); 
+        return res.status(400).send({'response': 'ID is invalid'}); 
     }
 
-    Todo.findById(id).then((todo) => {
+    Todo.findOne({
+        "_id": id, 
+        "_creator": req.user._id
+    }).then((todo) => {
         if(!todo) {
             res.status(404).send('Todo not found');
         } else {
@@ -44,7 +51,12 @@ var todoDelete = function(req, res ) {
         return res.status(404).send({'response': 'ID is invalid'}); 
     }
 
-    Todo.findByIdAndRemove(id).then((todo) => {
+    Todo.findOneAndRemove(
+        {
+            "_id": id, 
+            "_creator": req.user._id
+        }
+    ).then((todo) => {
         if(!todo) {
             res.status(404).send('Todo not found');
         } else {
@@ -71,7 +83,11 @@ var todoUpdate = function(req, res) {
         body.completedAt = null; 
     }
     //update query
-    Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+    var query = {
+        "_id": id, 
+        "_creator": req.user._id
+    }; 
+    Todo.findOneAndUpdate(query, {$set: body}, {new: true}).then((todo) => {
         if(!todo) {
             return res.status(404).send('Todo not found');
         }
